@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react'
+import TodoItem from './TodoItem'
 import '../css/todoList.css'
 
 export default class TodoList extends Component {
@@ -13,37 +14,42 @@ export default class TodoList extends Component {
     render() {
         return (
             <Fragment>
-                <input value={this.state.inputValue} onChange={(e) => this.handleInput(e)} ></input>
-                <button onClick={() => this.handleClick()}>提交</button>
+                <span>请输入内容</span>
+                <input value={ this.state.inputValue } onChange={ (e) => this.handleInput(e) } ></input>
+                <button onClick={ () => this.handleClick() }>提交</button>
                 <ul>
-                    {
-                        this.state.list.map((item, index) => {
-                            return <li key={index} onClick={() => this.deleteItem(item)} className="list-item">{item}</li>
-                        })
-                    }
+                    { this.renderTodoListItem() }
                 </ul>
             </Fragment>
         )
     }
 
-    handleInput(e) {
-        this.setState({
-            'inputValue': e.target.value
+    renderTodoListItem() {
+        return this.state.list.map((item, index) => {
+            return <TodoItem 
+                key={index}
+                content={item} 
+                index={index} 
+                deleteItem={this.deleteItem.bind(this)}
+            />
         })
+    }
+
+    handleInput(e) {
+        const value = e.target.value
+        this.setState(() => ({'inputValue': value}))
     }
 
     handleClick() {
-        this.setState({
-            list: [...this.state.list, this.state.inputValue],
+        this.setState((prevState) => ({
+            list: [...prevState.list, prevState.inputValue],
             inputValue: ''
-        })
+        }))
     }
 
     deleteItem(item) {
-        let arr = this.state.list.filter(i => i !== item)
-        console.log(this.state.list)
-        this.setState({
-            list: this.state.list.filter(i => i !== item)
-        })
+        this.setState((prevState) => ({
+            list: prevState.list.filter(i => i !== item)
+        }))
     }
 }

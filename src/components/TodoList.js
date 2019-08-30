@@ -15,9 +15,17 @@ export default class TodoList extends Component {
         return (
             <Fragment>
                 <span>请输入内容</span>
-                <input value={ this.state.inputValue } onChange={ (e) => this.handleInput(e) } ></input>
+                <input 
+                        value={ this.state.inputValue } 
+                        ref={(input) => this.input = input} 
+                        onChange={ (e) => this.handleInput(e) }
+                />
+                {/* <input 
+                        value={ this.state.inputValue } 
+                        onChange={ (e) => this.handleInput(e) } 
+                /> */}
                 <button onClick={ () => this.handleClick() }>提交</button>
-                <ul>
+                <ul ref={(ul) => { this.ul = ul }}>
                     { this.renderTodoListItem() }
                 </ul>
             </Fragment>
@@ -36,7 +44,8 @@ export default class TodoList extends Component {
     }
 
     handleInput(e) {
-        const value = e.target.value
+        // const value = e.target.value
+        const value = this.input.value
         this.setState(() => ({'inputValue': value}))
     }
 
@@ -44,7 +53,9 @@ export default class TodoList extends Component {
         this.setState((prevState) => ({
             list: [...prevState.list, prevState.inputValue],
             inputValue: ''
-        }))
+        }), () => {
+            console.log(this.ul.querySelectorAll('div').length)
+        })
     }
 
     deleteItem(item) {

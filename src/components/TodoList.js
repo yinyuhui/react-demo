@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react'
+import { CSSTransition, TransitionGroup} from 'react-transition-group'
 import TodoItem from './TodoItem'
 import axios from 'axios'
 // import Mock from './components/Mock'
@@ -29,7 +30,9 @@ export default class TodoList extends Component {
                 /> */}
                 <button onClick={ () => this.handleClick() }>提交</button>
                 <ul ref={(ul) => { this.ul = ul }}>
-                    { this.renderTodoListItem() }
+                    <TransitionGroup>
+                        { this.renderTodoListItem() }
+                    </TransitionGroup>
                 </ul>
             </Fragment>
         )
@@ -47,12 +50,19 @@ export default class TodoList extends Component {
 
     renderTodoListItem() {
         return this.state.list.map((item, index) => {
-            return <TodoItem 
-                key={index}
-                content={item} 
-                index={index} 
-                deleteItem={this.deleteItem.bind(this)}
-            />
+            return <CSSTransition
+                    timeout={1000}
+                    classNames="fade"
+                    appear={true}
+                    key={index}
+                    unmountOnExit>
+                        <TodoItem 
+                            key={index}
+                            content={item} 
+                            index={index} 
+                            deleteItem={this.deleteItem.bind(this)}
+                        />
+                </CSSTransition>
         })
     }
 

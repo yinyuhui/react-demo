@@ -3,3 +3,35 @@
     width: 300px;
     margin-bottom: 20px;
 }
+
+.fade-appear, .fade-enter {
+    color: red;
+    opacity: 0.2;
+}
+
+.fade-appear-active, .fade-enter-active {
+    color: green;
+    opacity: 0.5;
+    transition: opacity 500ms ease-in;
+}
+
+.fade-appear-done, .fade-enter-done {
+    opacity: 1;
+    color: blue;
+}
+
+.fade-exit {
+    color: red;
+    opacity: 1;
+}
+
+.fade-exit-active {
+    opacity: 0.5;
+    color: blue;
+    transition: opacity 500ms ease-in;
+}
+
+.fade-exit-done {
+    opacity: 0;
+    color: blue;
+}

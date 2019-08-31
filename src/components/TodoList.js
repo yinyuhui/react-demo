@@ -1,5 +1,8 @@
 import React, { Component, Fragment } from 'react'
 import TodoItem from './TodoItem'
+import axios from 'axios'
+// import Mock from './components/Mock'
+import '../mock/todolist.js'
 import '../css/todoList.css'
 
 export default class TodoList extends Component {
@@ -7,7 +10,7 @@ export default class TodoList extends Component {
         super(props)
         this.state = {
             inputValue: '',
-            list: [11,33],
+            list: [],
         }
     }
 
@@ -30,6 +33,16 @@ export default class TodoList extends Component {
                 </ul>
             </Fragment>
         )
+    }
+
+    componentDidMount() {
+        console.log('componentDidMount')
+        axios.get('/api/todolist').then(res => {
+            console.log(res.data.list)
+            this.setState(() => ({
+                list: [...res.data.list]
+            }))
+        })
     }
 
     renderTodoListItem() {

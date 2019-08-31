@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import '../css/todoList.css'
 
 export default class TodoItem extends Component {
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
         this.state = {}
     }
 

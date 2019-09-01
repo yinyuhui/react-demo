@@ -1,89 +1,65 @@
-import React, { Component, Fragment } from 'react'
-import { CSSTransition, TransitionGroup} from 'react-transition-group'
-import TodoItem from './TodoItem'
+import React, { Component } from 'react'
 import axios from 'axios'
-// import Mock from './components/Mock'
-import '../mock/todolist.js'
+import { Button, Input, List } from 'antd'
+import 'antd/dist/antd.css';
 import '../css/todoList.css'
+import '../mock/todolist.js'
+import store from '../store'
+import { getInputChangeAction, getChangeList, getAddListItem, getDeleteListItem } from '../store/actionCreators'
 
 export default class TodoList extends Component {
     constructor(props) {
         super(props)
-        this.state = {
-            inputValue: '',
-            list: [],
-        }
+        this.state = store.getState()
+        store.subscribe(() => this.handleStoreChange())
     }
 
     render() {
         return (
-            <Fragment>
-                <span>请输入内容</span>
-                <input 
-                        value={ this.state.inputValue } 
-                        ref={(input) => this.input = input} 
-                        onChange={ (e) => this.handleInput(e) }
+            <div style={{ padding: '20px' }}>
+                <label htmlFor="input">请输入内容</label>
+                <Input 
+                    id="input"
+                    value={ this.state.inputValue } 
+                    onChange={ (e) => this.handleInput(e) }
+                    style={{ width: 200, margin: '0 10px' }}
+                    placeholder="please input todo info"
                 />
-                {/* <input 
-                        value={ this.state.inputValue } 
-                        onChange={ (e) => this.handleInput(e) } 
-                /> */}
-                <button onClick={ () => this.handleClick() }>提交</button>
-                <ul ref={(ul) => { this.ul = ul }}>
-                    <TransitionGroup>
-                        { this.renderTodoListItem() }
-                    </TransitionGroup>
-                </ul>
-            </Fragment>
+                <Button type="primary" onClick={ () => this.handleClick() }>提交</Button>
+                <List
+                    bordered
+                    style={{ width: 500, marginTop: 20 }}
+                    dataSource={ this.state.list }
+                    renderItem={item => (
+                        <List.Item onClick={ () => this.deleteItem(item) }>
+                            {item}
+                        </List.Item>
+                    )}
+                />
+            </div>
         )
     }
 
     componentDidMount() {
-        console.log('componentDidMount')
         axios.get('/api/todolist').then(res => {
-            console.log(res.data.list)
-            this.setState(() => ({
-                list: [...res.data.list]
-            }))
+            store.dispatch(getChangeList([...res.data.list]))
         })
     }
 
-    renderTodoListItem() {
-        return this.state.list.map((item, index) => {
-            return <CSSTransition
-                    timeout={1000}
-                    classNames="fade"
-                    appear={true}
-                    key={index}
-                    unmountOnExit>
-                        <TodoItem 
-                            key={index}
-                            content={item} 
-                            index={index} 
-                            deleteItem={this.deleteItem.bind(this)}
-                        />
-                </CSSTransition>
-        })
+    handleStoreChange() {
+        this.setState(store.getState())
     }
 
     handleInput(e) {
-        // const value = e.target.value
-        const value = this.input.value
-        this.setState(() => ({'inputValue': value}))
+        const value = e.target.value
+        store.dispatch(getInputChangeAction(value))
     }
 
     handleClick() {
-        this.setState((prevState) => ({
-            list: [...prevState.list, prevState.inputValue],
-            inputValue: ''
-        }), () => {
-            console.log(this.ul.querySelectorAll('div').length)
-        })
+        store.dispatch(getAddListItem())
     }
 
     deleteItem(item) {
-        this.setState((prevState) => ({
-            list: prevState.list.filter(i => i !== item)
-        }))
+        store.dispatch(getDeleteListItem(item))
     }
 }

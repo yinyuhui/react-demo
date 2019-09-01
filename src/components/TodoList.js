@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
+import TodoListUI from './TodoListUI'
 import axios from 'axios'
-import { Button, Input, List } from 'antd'
 import 'antd/dist/antd.css';
 import '../css/todoList.css'
 import '../mock/todolist.js'
@@ -16,27 +16,13 @@ export default class TodoList extends Component {
 
     render() {
         return (
-            <div style={{ padding: '20px' }}>
-                <label htmlFor="input">请输入内容</label>
-                <Input 
-                    id="input"
-                    value={ this.state.inputValue } 
-                    onChange={ (e) => this.handleInput(e) }
-                    style={{ width: 200, margin: '0 10px' }}
-                    placeholder="please input todo info"
-                />
-                <Button type="primary" onClick={ () => this.handleClick() }>提交</Button>
-                <List
-                    bordered
-                    style={{ width: 500, marginTop: 20 }}
-                    dataSource={ this.state.list }
-                    renderItem={item => (
-                        <List.Item onClick={ () => this.deleteItem(item) }>
-                            {item}
-                        </List.Item>
-                    )}
-                />
-            </div>
+            <TodoListUI
+                inputValue={this.state.inputValue}
+                list={this.state.list}
+                handleClick={this.handleClick.bind(this)}
+                handleInput={this.handleInput.bind(this)}
+                deleteItem={this.deleteItem.bind(this)}
+            />
         )
     }
 

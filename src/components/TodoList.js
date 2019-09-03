@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import TodoListUI from './TodoListUI'
 import '../mock/todolist.js'
 import store from '../store'
-import { getInputChangeAction, getTodoList, getAddListItem, getDeleteListItem } from '../store/actionCreators'
+import { getInputChangeAction, getInitList, getAddListItem, getDeleteListItem } from '../store/actionCreators'
 import 'antd/dist/antd.css';
 import '../css/todoList.css'
 
@@ -26,7 +26,8 @@ export default class TodoList extends Component {
     }
 
     componentDidMount() {
-        store.dispatch(getTodoList())
+        const action = getInitList()
+        store.dispatch(action)
     }
 
     handleStoreChange() {

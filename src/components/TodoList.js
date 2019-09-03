@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import TodoListUI from './TodoListUI'
 import '../mock/todolist.js'
+import { connect } from 'react-redux'
 import store from '../store'
 import { getInputChangeAction, getInitList, getAddListItem, getDeleteListItem } from '../store/actionCreators'
 import 'antd/dist/antd.css';
 import '../css/todoList.css'
 
-export default class TodoList extends Component {
+class TodoList extends Component {
     constructor(props) {
         super(props)
         this.state = store.getState()
@@ -16,8 +17,8 @@ export default class TodoList extends Component {
     render() {
         return (
             <TodoListUI
-                inputValue={this.state.inputValue}
-                list={this.state.list}
+                inputValue={this.props.inputValue}
+                list={this.props.list}
                 handleClick={this.handleClick.bind(this)}
                 handleInput={this.handleInput.bind(this)}
                 deleteItem={this.deleteItem.bind(this)}
@@ -35,15 +36,42 @@ export default class TodoList extends Component {
     }
 
     handleInput(e) {
-        const value = e.target.value
-        store.dispatch(getInputChangeAction(value))
+        // const value = e.target.value
+        // store.dispatch(getInputChangeAction(value))
+        this.props.changeInputValue(e)
     }
 
     handleClick() {
-        store.dispatch(getAddListItem())
+        this.props.handleBtnClick()
+        // store.dispatch(getAddListItem())
     }
 
     deleteItem(item) {
-        store.dispatch(getDeleteListItem(item))
+        this.props.deleteListItem(item)
+        // store.dispatch(getDeleteListItem(item))
     }
 }
+
+const mapStateToProps = (state) => {
+    return {
+        inputValue: state.inputValue,
+        list: state.list
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        changeInputValue(e) {
+            const value = e.target.value
+            dispatch(getInputChangeAction(value))
+        },
+        handleBtnClick() {
+            dispatch(getAddListItem())
+        },
+        deleteListItem(item) {
+            store.dispatch(getDeleteListItem(item))
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TodoList) 

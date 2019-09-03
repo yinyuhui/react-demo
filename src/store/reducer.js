@@ -7,23 +7,23 @@ const defaultState = {
 
 export default (state = defaultState, action) => {
     let newState = JSON.parse(JSON.stringify(state))
+    const { type } = action
 
-    if(action.type === CHANGE_INPUT_VALUE) {
-        newState.inputValue = action.value
-    }
-
-    if(action.type === CHANGE_LIST) {
-        newState.list = action.value
-    }
-
-    if(action.type === ADD_LIST_ITEM) {
-        newState.list.push(newState.inputValue)
-        newState.inputValue = ''
-    }
-
-    if(action.type === DELETE_LIST_ITEM) {
-        // 若有重复值 则会删除所有项 此处有问题 可以用 index 索引删除解决
-        newState.list = newState.list.filter(item => item !== action.value)
+    switch(type) {
+        case CHANGE_INPUT_VALUE: 
+            newState.inputValue = action.value
+            break
+        case CHANGE_LIST:
+            newState.list = action.value
+            break
+        case ADD_LIST_ITEM:
+            newState.list.push(newState.inputValue)
+            newState.inputValue = ''
+            break
+        case DELETE_LIST_ITEM: 
+            // 若有重复值 则会删除所有项 此处有问题 可以暂时用 index 索引删除解决  最好用ID
+            newState.list = newState.list.filter(item => item !== action.value)
+            break
     }
 
     return newState

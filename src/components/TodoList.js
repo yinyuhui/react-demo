@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
 import TodoListUI from './TodoListUI'
-import axios from 'axios'
-import 'antd/dist/antd.css';
-import '../css/todoList.css'
 import '../mock/todolist.js'
 import store from '../store'
-import { getInputChangeAction, getChangeList, getAddListItem, getDeleteListItem } from '../store/actionCreators'
+import { getInputChangeAction, getTodoList, getAddListItem, getDeleteListItem } from '../store/actionCreators'
+import 'antd/dist/antd.css';
+import '../css/todoList.css'
 
 export default class TodoList extends Component {
     constructor(props) {
@@ -27,9 +26,7 @@ export default class TodoList extends Component {
     }
 
     componentDidMount() {
-        axios.get('/api/todolist').then(res => {
-            store.dispatch(getChangeList([...res.data.list]))
-        })
+        store.dispatch(getTodoList())
     }
 
     handleStoreChange() {
